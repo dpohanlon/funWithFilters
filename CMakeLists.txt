@@ -8,8 +8,8 @@ set (Filters_VERSION_MINOR 0)
 
 find_package(FFTW REQUIRED)
 
-include_directories(${PROJECT_BINARY_DIR} ${FFTW_INCLUDES})
+include_directories(${PROJECT_BINARY_DIR} ${FFTW_INCLUDE_DIRS})
 
 add_executable(fft fft.cpp)
 
-target_link_libraries(fft fftw3)
+target_link_libraries(fft ${FFTW_LIBRARIES})
