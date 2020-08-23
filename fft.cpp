@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <vector>
 
@@ -10,6 +11,21 @@ double gauss(double x, double m, double s)
   double t2 = exp( -((x - m) * (x - m)) / (2 * s * s) );
 
   return t1 * t2;
+}
+
+double gauss2d(double x1, double x2, double m1, double m2, double s1, double s2, double rho)
+{
+    double z1 = ((x1 - m1) * (x1 - m1)) / (s1 * s1);
+    double z2 = ((x2 - m2) * (x2 - m2)) / (s2 * s2);
+    double zCross = (2 * rho * (x1 - m1) * (x2 - m2)) / (s1 * s2);
+
+    double z = z1 + z2 + zCross;
+
+    double norm = 1 / (2 * M_PI * s1 * s2 * sqrt(1 - rho * rho));
+
+    double arg = -z / (2 * (1 - rho * rho));
+
+    return norm * exp(arg);
 }
 
 std::vector<double> makeGauss(double m, double s, double low, double high, int n)
@@ -83,7 +99,7 @@ std::vector<double> convolve(std::vector<double> & a, std::vector<double> & b)
 
   std::vector<double> conv_real(n);
 
-  int mid = static_cast<int>(floor(n / 2));
+  int mid = (n % 2 != 0) ? (n / 2) + 1 : (n / 2);
 
   for(int i = mid; i < n; i++){
     conv_real[i - mid] = conv[i][0];
@@ -109,13 +125,19 @@ int main(int argc, char const *argv[])
 {
 
   std::vector<double> data = makeGauss(0, 3, -30, 30, 100);
-  std::vector<double> filter = makeGauss(0, 3, -30, 30, 100);
+  std::vector<double> filter = makeGauss(0, 5, -30, 30, 100);
 
   std::vector<double> conv = convolve(data, filter);
 
+  std::ofstream fileOut;
+
+  fileOut.open ("test.csv");
+
   for (auto v : conv){
-    std::cout << v << std::endl;
+    fileOut << v << std::endl;
   }
+
+  fileOut.close();
 
   return 0;
 }
