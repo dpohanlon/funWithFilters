@@ -43,6 +43,28 @@ std::vector<double> makeGauss(double m, double s, double low, double high, int n
 
 }
 
+std::vector<std::vector<double>> makeGauss2d(double m1, double m2, double s1, double s2, double rho, double low, double high, int n)
+{
+  std::vector<std::vector<double>> out(n, std::vector<double>(n));
+
+  double step_size = (high - low) / n;
+
+  for (int i = 0; i < n; i++) {
+
+    double x1 = low + step_size * i;
+
+    for (int j = 0; i < n; j++) {
+
+      double x2 = low + step_size * j;
+
+      out[i][j] = gauss2d(x1, x2, m1, m2, s1, s2, rho);
+    }
+  }
+
+  return out;
+
+}
+
 fftw_complex * computeFFT(fftw_complex * in, int n, int sign)
 {
 
